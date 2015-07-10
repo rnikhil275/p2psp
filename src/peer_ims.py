@@ -3,8 +3,8 @@
 # Copyright (C) 2014, the P2PSP team.
 # http://www.p2psp.org
 
-# The P2PSP.org project has been supported by the Junta de Andalucía
-# through the Proyecto Motriz "Codificación de Vídeo Escalable y su
+# The P2PSP.org project has been supported by the Junta de Andalucia
+# through the Proyecto Motriz "Codificacion de Video Escalable y su
 # Streaming sobre Internet" (P10-TIC-6548).
 
 # {{{ Imports
@@ -34,6 +34,20 @@ class Peer_IMS(threading.Thread):
     USE_LOCALHOST = False       # Use localhost instead the IP of the addapter
 
     # }}}
+
+    def __new__(typ, *args, **kwargs):
+        # {{{
+
+        if len(args) == 1 and isinstance(args[0], Peer_IMS):
+            # Parameter is a peer instance; extending its class instead of nesting:
+            instance = args[0]
+            instance.__class__ = typ
+            return instance
+        else:
+            # Use default object creation
+            return object.__new__(typ, *args, **kwargs)
+
+        # }}}
 
     def __init__(self):
         # {{{
@@ -83,7 +97,7 @@ class Peer_IMS(threading.Thread):
             #my_ip = '127.0.0.1'
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("gmail.com",80))
+            s.connect(self.splitter)
             #my_ip = socket.gethostbyname(socket.gethostname())
             my_ip = s.getsockname()[0]
             s.close()
